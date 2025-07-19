@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身體數據紀錄</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f4f9; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h1 { text-align: center; color: #4a4a4a; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #555; }
+        input, textarea, button { width: 100%; padding: 0.75rem; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; font-size: 1rem; }
+        input[type="number"], input[type="date"] { -moz-appearance: textfield; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-size: 1.1rem; font-weight: bold; transition: background-color 0.3s; }
+        button:hover { background-color: #0056b3; }
+        .flash-messages { list-style: none; padding: 0; margin-bottom: 1.5rem; }
+        .flash-messages li { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+        .flash-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .flash-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>紀錄我的身體數據</h1>
+
+        <!-- ========== 【新增】前往報告頁的連結 ========== -->
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+        <a href="{{ url_for('report') }}" style="text-decoration: none; background-color: #17a2b8; color: white; padding: 0.5rem 1rem; border-radius: 4px;">查看進度報告</a>
+        </div>
+         <!-- ============================================== -->
+
+        <!-- Flask Flash 訊息顯示區 -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                {% for category, message in messages %}
+                    <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form action="" method="post">
+            <!-- ========== 新增的姓名欄位 ========== -->
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <!-- ==================================== -->
+
+            <div class="form-group">
+                <label for="weight">體重 (kg)</label>
+                <input type="number" id="weight" name="weight" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="skeletal_muscle_mass">骨骼肌重 (kg)</label>
+                <input type="number" id="skeletal_muscle_mass" name="skeletal_muscle_mass" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="body_fat">體脂率 (%)</label>
+                <input type="number" id="body_fat" name="body_fat" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="log_date">記錄日期</label>
+                <input type="date" id="log_date" name="log_date" required>
+            </div>
+            <div class="form-group">
+                <label for="note">備註</label>
+                <textarea id="note" name="note" rows="3"></textarea>
+            </div>
+            <button type="submit">儲存紀錄</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('log_date').valueAsDate = new Date();
+    </script>
+</body>
+</html>

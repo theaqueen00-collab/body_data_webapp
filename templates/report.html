@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>進度報告</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
+        .container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+        h1 { text-align: center; color: #4a4a4a; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .positive { color: #28a745; font-weight: bold; }
+        .negative { color: #dc3545; font-weight: bold; }
+        .no-progress { color: #6c757d; }
+        .back-link { display: block; text-align: center; margin-top: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>個人進度報告</h1>
+
+        {% if report_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>姓名</th>
+                    <!-- ========== 修改此處 ========== -->
+                    <th>體脂率下降 (相對變化)</th>
+                    <!-- ========================== -->
+                    <th>骨骼肌增加 (相對變化)</th>
+                    <th>紀錄區間</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name, data in report_data.items() %}
+                <tr>
+                    <td>{{ name }}</td>
+                    {% if data.has_progress %}
+                        <td>
+                            <span class="{{ 'positive' if data.fat_loss_percentage >= 0 else 'negative' }}">
+                                {{ "%.2f"|format(data.fat_loss_percentage) }}%
+                            </span>
+                        </td>
+                        <td>
+                            <span class="{{ 'positive' if data.muscle_gain_percentage >= 0 else 'negative' }}">
+                                {{ "%.2f"|format(data.muscle_gain_percentage) }}%
+                            </span>
+                        </td>
+                        <td>{{ data.first_date.strftime('%Y-%m-%d') }} ~ {{ data.last_date.strftime('%Y-%m-%d') }}</td>
+                    {% else %}
+                        <td colspan="3" class="no-progress">僅有一筆紀錄，尚無進度可比較。</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p style="text-align: center;">資料庫中目前沒有任何紀錄。</p>
+        {% endif %}
+
+        <a href="{{ url_for('index') }}" class="back-link">返回紀錄頁面</a>
+    </div>
+</body>
+</html>
